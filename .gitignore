@@ -1,5 +1,20 @@
-# Created by https://www.toptal.com/developers/gitignore/api/node,windows
-# Edit at https://www.toptal.com/developers/gitignore?templates=node,windows
+# Created by https://www.toptal.com/developers/gitignore/api/node,windows,linux
+# Edit at https://www.toptal.com/developers/gitignore?templates=node,windows,linux
+
+### Linux ###
+*~
+
+# temporary files which can be created if a process still has a handle open of a deleted file
+.fuse_hidden*
+
+# KDE directory preferences
+.directory
+
+# Linux trash folder which might appear on any partition or disk
+.Trash-*
+
+# .nfs files are created when an open file is removed but is still being accessed
+.nfs*
 
 ### Node ###
 # Logs
@@ -167,4 +182,4 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# End of https://www.toptal.com/developers/gitignore/api/node,windows
+# End of https://www.toptal.com/developers/gitignore/api/node,windows,linux
