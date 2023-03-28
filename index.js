@@ -3,12 +3,13 @@ require('dotenv').config();
 const bodyParser = require("body-parser");
 const app = express();
 const cors = require("cors");
-const Joi = require('joi');
+
 
 const routerApi = require('./routes/index.js');
 const middlewareErrors = require('./middlewares/error.handling');
 const middlewareTimeout = require('./middlewares/general.js');
-const middlewareJoi = require('./schemajoi/schema.js')
+const validatorLogin = require('./middlewares/validators/validator.login');
+const scheme = require('./middlewares/scheme.registration');
 
 // const pool = require('./libs/postgres.pool');
 // app.use(express.json());
@@ -38,35 +39,15 @@ app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(middlewareTimeout);
 
+
 app.get('/', (request, response) => {
   response.json({ info: 'Node.js, Express, and Postgres API' })
 })
 
-
-const schema = Joi.object({
-  username: Joi.string().alphanum().min(3).max(30).required(),
-  password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
-  repeat_password: Joi.ref('password'),
-  access_token: [Joi.string(), Joi.number()],
-  birth_year: Joi.number().integer().min(1900).max(2013),
-  email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } })
-}).with('username', 'birth_year');
-
-const validateSchema = (schema) => {
-  return (req, res, next) => {
-    const { error } = schema.validate(req.body);
-    if (error) {
-      console.log("hola");
-      return res.status(400).json({ error: error.details[0].message });
-    }
-    return next();
-  };
-}
-
 app.use(express.json());
 
 // Ejemplo de middleware de validación para una ruta:
-app.post('/userss', validateSchema(schema), (req, res) => {
+app.post('/userss', validatorLogin(scheme), (req, res) => {
   // Si la validación es exitosa, el siguiente middleware se ejecutará y se procesará la solicitud.
   // De lo contrario, se enviará una respuesta de error 400 al cliente.
   res.json({ message: 'Usuario creado correctamente' });
@@ -92,6 +73,7 @@ routerApi(app);
 //   next();
 // });
 
+app.use( middlewareErrors.handleJoiErrors);
 app.use( middlewareErrors.handleCorsErrors);
 app.use( middlewareErrors.middlewareErrorUrls);
 app.use( middlewareErrors.errorHandler );

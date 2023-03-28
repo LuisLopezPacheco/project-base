@@ -2,9 +2,13 @@ const express = require("express");
 
 const router = express.Router();
 const services = require("../services/user.services");
+const validatorLogin = require('../middlewares/validators/validator.login');
+const scheme = require('../middlewares/scheme.registration');
+
 const user = new services();
 
-router.get('/', async (req, res, next) => {
+router.get('/', validatorLogin(scheme),async (req, res, next) => {
+
   try {
     const respusta = await user.getUsers();
     res.json(respusta);
@@ -26,6 +30,6 @@ router.get('/', async (req, res, next) => {
 //   });
 // })
 
-module.exports = router
+module.exports = router;
 
 
