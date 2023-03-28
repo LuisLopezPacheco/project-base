@@ -13,7 +13,14 @@ const handleCorsErrors = (err, req, res, next) => {
   }
 }
 
-const errorHandler = (err, req, res, next) =>{
+const handleJoiErrors = (err, req, res, next) => {
+
+  if (err.name === 'ValidationError'){
+    res.status(422).send(`422: Unprocessable Content. ${err.message}`);
+  }
+}
+
+const errorHandler = (err, req, res, next) => {
   if (err.status === 400) {
     console.error(err.stack);
     // Manejar el error 400 (Solicitud incorrecta)
@@ -30,7 +37,7 @@ const errorHandler = (err, req, res, next) =>{
     // Manejar el error 404 (No encontrado)
     // console.error(err.stack);
     res.status(404).send(`No encontrado: ${err.status}`);
-  } else  {
+  } else {
     console.log()
     // console.log(err.stack);
     // console.log(res.name);
@@ -41,6 +48,8 @@ const errorHandler = (err, req, res, next) =>{
     res.status(500).send(`Error interno del servidor: 500`);
   }
 };
+
+
 
 // app.get('/', function(req, res, next) {
 //   try {
@@ -69,7 +78,9 @@ const middlewareErrorUrls = ((req, res, next) => {
   next(error);
 });
 
-module.exports = {errorHandler,
-                  middlewareErrorUrls,
-                  handleCorsErrors
-                };
+module.exports = {
+  errorHandler,
+  middlewareErrorUrls,
+  handleCorsErrors,
+  handleJoiErrors
+};
